@@ -1,4 +1,4 @@
-#jspsych-RDK plugin
+# jspsych-RDK plugin
 
 This plugin displays a Random Dot Kinematogram (RDK) and allows the subject to report the primary direction of motion by pressing a key on the keyboard. The stimulus is displayed until a keyboard response is given. The trial can be ended automatically if the subject has failed to respond within a fixed length of time.
 
@@ -7,7 +7,7 @@ For optimal performance, fullscreen mode should be manually triggered by the use
 
 
 
-##Parameters
+## Parameters
 
 This table lists the parameters associated with this plugin. Parameters can be left unspecified if the default value is acceptable.
 
@@ -33,14 +33,14 @@ This table lists the parameters associated with this plugin. Parameters can be l
 |`reinsert_type`|numeric|2|The type of reinsertion of a dot that has gone out of bounds<br><br>1 - Randomly appear anywhere in the aperture<br>2 - Appear on the opposite edge of the aperture. For squares and rectangles, a random point on the opposite edge is chosen as the reinsertion point. For circles and ellipses, the exit point is reflected about center to become the reinsertion point.<br>|
 
 
-###RDK type parameter
+### RDK type parameter
 ** See Fig. 1 in Scase, Braddick, and Raymond (1996) for a visual depiction of these different signal selection rules and noise types.
 
-####Signal Selection rule:
+#### Signal Selection rule:
 -**Same**: Each dot is designated to be either a coherent dot (signal) or incoherent dot (noise) and will remain so throughout all frames in the display. Coherent dots will always move in the direction of coherent motion in all frames.
 -**Different**: Each dot can be either a coherent dot (signal) or incoherent dot (noise) and will be designated randomly (weighted based on the coherence level) at each frame. Only the dots that are designated to be coherent dots will move in the direction of coherent motion, but only in that frame. In the next frame, each dot will be designated randomly again on whether it is a coherent or incoherent dot.
 
-####Noise Type:
+#### Noise Type:
 -**Random position**: The incoherent dots appear in a random location in the aperture in each frame
 -**Random walk**: The incoherent dots will move in a random direction (designated randomly in each frame) in each frame.
 -**Random direction**: Each incoherent dot has its own alternative direction of motion (designated randomly at the beginning of the trial), and moves in that direction in each frame.
@@ -48,7 +48,7 @@ This table lists the parameters associated with this plugin. Parameters can be l
 
 
 
-##Data Generated
+## Data Generated
 
 In addition to the default data collected by all plugins, this plugin collects all parameter data described above and additional data described below for each trial.
 
@@ -63,7 +63,7 @@ In addition to the default data collected by all plugins, this plugin collects a
 
 
 
-##Example
+## Example
 
 Displaying a trial with 2 choices and 1 correct choice
 
