@@ -14,7 +14,7 @@ This table lists the parameters associated with this plugin. Parameters can be l
 |Parameter|Type|Default Value| Descripton|
 |---------|----|-------------|-----------|
 |`choices`|array|[]|The valid keys that the subject can press as a response. Must be an array of chars. If left unspecified, any key is a valid key.|
-|`correct_choice`|Array or char|undefined|The keys that are considered the correct response for that trial. Can be a single char or an array of chars (not ASCII values). This is used to determine whether the subject chose the correct response and return that data. |
+|`correct_choice`|array or char|undefined|The keys that are considered the correct response for that trial. Can be a single char or an array of chars (not ASCII values). This is used to determine whether the subject chose the correct response and return that data. |
 |`trial_duration`|numeric|500|The amount of time that the stimulus is displayed on the screen in ms. If -1, the stimulus will be displayed until the subject keys in a valid response. (‘choices’ parameter must contain valid keys or else the stimuli will run indefinitely).|
 |`response_ends_trial`|boolean|true|If true, then the subject’s response will end the trial. If false, the stimuli will be presented for the full trial_duration (the response will be recorded as long as the subject responds within the trial duration).|
 |`number_of_dots`|numeric|300|Number of dots per set. Equivalent to number of dots per frame.|
