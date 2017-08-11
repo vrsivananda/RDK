@@ -1,27 +1,27 @@
 /*
 		
-		RDK plugin for JsPsych
-		----------------------
-		
-		This code was created in the Consciousness and Metacognition Lab at UCLA, 
-		under the supervision of Brian Odegaard and Hakwan Lau
-    
-		----------------------
-		
-		Copyright (C) 2017  Sivananda Rajananda
-		
-		This program is free software: you can redistribute it and/or modify
-		it under the terms of the GNU General Public License as published by
-		the Free Software Foundation, either version 3 of the License, or
-		(at your option) any later version.
-		
-		This program is distributed in the hope that it will be useful,
-		but WITHOUT ANY WARRANTY; without even the implied warranty of
-		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-		GNU General Public License for more details.
-		
-		You should have received a copy of the GNU General Public License
-		along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	RDK plugin for JsPsych
+	----------------------
+	
+	This code was created in the Consciousness and Metacognition Lab at UCLA, 
+	under the supervision of Brian Odegaard and Hakwan Lau
+	
+	----------------------
+	
+	Copyright (C) 2017  Sivananda Rajananda
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+	
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		
 */
 		
@@ -51,7 +51,7 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 		trial.aperture_width = trial.aperture_width || 600;
 		trial.aperture_height = trial.aperture_height || 400;
 		trial.dot_color = trial.dot_color || "white"; 
-		trial.backgroundColor = trial.backgroundColor || "gray";
+		trial.background_color = trial.background_color || "gray";
 		trial.RDK_type = trial.RDK_type || 3;
 		trial.aperture_type = trial.aperture_type || 2;
 		trial.reinsert_type = trial.reinsert_type || 2;
@@ -263,6 +263,7 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 				"choices": trial.choices, //The set of valid keys
 				"correct_choice": trial.correct_choice, //The correct choice
 				"trial_duration": trial.trial_duration, //The trial duration 
+				"response_ends_trial": trial.response_ends_trial, //If the response ends the trial
 				"number_of_dots": trial.number_of_dots,
 				"number_of_sets": trial.number_of_sets,
 				"coherent_direction": trial.coherent_direction,
@@ -524,7 +525,7 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 					dot = resetLocation(dot);
 				}
 
-				//If it goes out of bounds, do the necessary (reinsert randomly or reinsert on the opposite edge) based on the parameter chosen
+				//If it goes out of bounds, do what is necessary (reinsert randomly or reinsert on the opposite edge) based on the parameter chosen
 				if (outOfBounds(dot)) {
 					switch (reinsertType) {
 						case 1:
@@ -628,7 +629,7 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 
 		//Calculates a random position on the opposite edge to reinsert the dot
 		function reinsertOnOppositeEdge(dot) {
-			//If it is a circle
+			//If it is a circle or ellipse
 			if (apertureType == 1 || apertureType == 2) {
 				//Bring the dot back into the aperture by moving back one step
 				dot.x -= dot.latestXMove;
