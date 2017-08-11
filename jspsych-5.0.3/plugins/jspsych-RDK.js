@@ -1,4 +1,31 @@
-
+/*
+		
+		RDK plugin for JsPsych
+		----------------------
+		
+		This code was created in the Consciousness and Metacognition Lab at UCLA, 
+		under the supervision of Brian Odegaard and Hakwan Lau
+    
+		----------------------
+		
+		Copyright (C) 2017  Sivananda Rajananda
+		
+		This program is free software: you can redistribute it and/or modify
+		it under the terms of the GNU General Public License as published by
+		the Free Software Foundation, either version 3 of the License, or
+		(at your option) any later version.
+		
+		This program is distributed in the hope that it will be useful,
+		but WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+		GNU General Public License for more details.
+		
+		You should have received a copy of the GNU General Public License
+		along with this program.  If not, see <http://www.gnu.org/licenses/>.
+		
+*/
+		
+		
 jsPsych.plugins["jspsych-RDK"] = (function() {
 
 	var plugin = {};
@@ -37,7 +64,7 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 		
 		//For square and circle, set the aperture height == aperture width
 		if (apertureType == 1 || apertureType == 3) {
-			trial.aperture_width = trial.aperture_height;
+			trial.aperture_height = trial.aperture_width;
 		}
 
 		//Convert the parameter variables to those that the code below can use
@@ -52,7 +79,7 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 		var apertureWidth = trial.aperture_width; // How many pixels wide the aperture is. For square aperture this will be the both height and width. For circle, this will be the diameter.
 		var apertureHeight = trial.aperture_height; //How many pixels high the aperture is. Only relevant for ellipse and rectangle apertures. For circle and square, this is ignored.
 		var dotColor = trial.dot_color; //Color of the dots
-		var backgroundColor = trial.backgroundColor;
+		var backgroundColor = trial.backgroundColor; //Color of the background
 		
 
 		/* RDK type parameter
@@ -66,7 +93,7 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 		-Different: Each dot can be either a coherent dot (signal) or incoherent dot (noise) and will be designated randomly (weighted based on the coherence level) at each frame. Only the dots that are designated to be coherent dots will move in the direction of coherent motion, but only in that frame. In the next frame, each dot will be designated randomly again on whether it is a coherent or incoherent dot.
 
 		Noise Type:
-		-Random position: The incoherent dots are in a random location in the aperture in each frame
+		-Random position: The incoherent dots appear in a random location in the aperture in each frame
 		-Random walk: The incoherent dots will move in a random direction (designated randomly in each frame) in each frame.
 		-Random direction: Each incoherent dot has its own alternative direction of motion (designated randomly at the beginning of the trial), and moves in that direction in each frame.
 
@@ -106,17 +133,15 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 		//--------------------------------------
 
 		//--------Set up Canvas begin-------
-
-		//Place the canvas in the display element to be drawn on later
-		//display_element.innerHTML = "<canvas style = 'margin:0; padding:0' id = 'myCanvas'> </canvas>";
 		
 		//Create a canvas element and append it to the DOM
 		var canvas = document.createElement("canvas");
 		display_element.append(canvas); //'append' is the jQuery equivalent of 'appendChild' in the DOM method
 		
 		
-		//the document body IS display_element (i.e. <body class="jspsych-display-element"> .... </body> )
+		//The document body IS 'display_element' (i.e. <body class="jspsych-display-element"> .... </body> )
 		var body = document.getElementsByClassName("jspsych-display-element")[0];
+		//Remove the margins and paddings of the display_element
 		body.style.margin = 0;
 		body.style.padding = 0;
 		body.style.backgroundColor = trial.background_color; //Match the background color of the canvas so that the removal of the canvas at the end of the trial is not noticed
@@ -125,10 +150,7 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 		canvas.style.margin = 0;
 		canvas.style.padding = 0;		
 		
-		//document.body.jspsych-display-element.style.margin = 0;
-		
-		//Initialize the canvas variable so that it can be used in code below.
-		//var canvas = document.getElementById("myCanvas");
+		//Get the context of the canvas so that it can be painted on.
 		var ctx = canvas.getContext("2d");
 
 		//Declare variables for width and height, and also set the canvas width and height to the window width and height
@@ -141,13 +163,19 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 		//--------Set up Canvas end-------
 		
 		
+		
+		//--------RDK variables and function calls begin--------
+		
+		//This is the main part of the trial that makes everything run
 
 		//Declare aperture parameters for initialization based on shape (used in initializeApertureParameters function below)
 		var horizontalAxis;
 		var verticalAxis;
-
+		
+		//Initialize the aperture parameters
 		initializeApertureParameters();
-
+		
+		//Declare global variable to store the frame rate of the trial
 		var frameRate = []; //How often the monitor refreshes, in ms. Currently an array to store all the intervals. Will be converted into a single number (the average) in end_trial function.
 
 		//Calculate the x and y jump sizes for coherent dots
@@ -158,14 +186,11 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 		var nCoherentDots = nDots * coherence;
 		var nIncoherentDots = nDots - nCoherentDots;
 
-		//Make the an array of arrays containing dot objects
+		//Make the array of arrays containing dot objects
 		var dotArray2d = makeDotArray2d();
 
 		var dotArray; //Declare a global variable to hold the current array
 		var currentSet = 0; //Declare and initialize a global variable to cycle through the dot arrays
-
-		//This calculates the frameRate
-		//calculateFrameRate();
 		
 		//Initialize stopping condition for animateDotMotion function that runs in a loop
 		var stopDotMotion = false;
@@ -176,17 +201,17 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 			key: -1
 		}
 		
-		//Declare a global timeout ID to be initialized below
+		//Declare a global timeout ID to be initialized below in animateDotMotion function and to be used in after_response function
 		var timeoutID;
-
-		//If the trial duration is set, then set a timer to count down and call the end_trial function when the time is up
-		//(If the subject did not press a valid keyboard response within the trial duration, then this will end the trial)
-		if (trial.trial_duration > 0) {
-			timeoutID = window.setTimeout(end_trial,trial.trial_duration); //This timeoutID is then used to cancel the timeout should the subject press a valid key
-		}
+		
+		//Declare global variable to be defined in startKeyboardListener function and to be used in end_trial function
+		var keyboardListener; 
 
 		//This runs the dot motion simulation, updating it according to the frame refresh rate of the screen.
 		animateDotMotion();
+		
+		
+		//--------RDK variables and function calls end--------
 
 
 
@@ -196,7 +221,6 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 
 		//----JsPsych Functions Begin----
 		
-		var keyboardListener; //Declare global variable to be defined in startKeyboardListener function and to be used in end_trial function
 		
 		//Function to start the keyboard listener
 		function startKeyboardListener(){
@@ -206,8 +230,8 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 				keyboardListener = jsPsych.pluginAPI.getKeyboardResponse({
 					callback_function: after_response, //Function to call once the subject presses a valid key
 					valid_responses: trial.choices, //The keys that will be considered a valid response and cause the callback function to be called
-					rt_method: 'performance', //The type method to record timing information. 'performance' is not yet supported by all browsers, but it is supported by Chrome. Alternative is 'date', but 'performance' is more precise.
-					persist: false, //Keyboard listener will only trigger the first time a valid key is pressed. If set to true, it has to be explicitly cancelled by the cancelKeyboardResponse plugin API.
+					rt_method: 'performance', //The type of method to record timing information. 'performance' is not yet supported by all browsers, but it is supported by Chrome. Alternative is 'date', but 'performance' is more precise.
+					persist: false, //If set to false, keyboard listener will only trigger the first time a valid key is pressed. If set to true, it has to be explicitly cancelled by the cancelKeyboardResponse plugin API.
 					allow_held_key: false //Only register the key once, after this getKeyboardResponse function is called. (Check JsPsych docs for better info under 'jsPsych.pluginAPI.getKeyboardResponse').
 				});
 			}
@@ -220,17 +244,13 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 			stopDotMotion = true;
 			
 			//Calculate the average frame rate
-			console.log(frameRate);
-			
-			//Check to make sure that the array is not empty
-			if(frameRate.length > 0){
+			if(frameRate.length > 0){//Check to make sure that the array is not empty
 				frameRate = frameRate.reduce((total,current) => total + current)/frameRate.length; //Sum up all the elements in the array
 			}else{
-				frameRate = 0; //Set to zero if the subject presses an answer before a frame is shown (empty array)
+				frameRate = 0; //Set to zero if the subject presses an answer before a frame is shown (i.e. if frameRate is an empty array)
 			}
-			console.log(frameRate);
 
-			//Kill the keyboard listener if it has been defined
+			//Kill the keyboard listener if keyboardListener has been defined
 			if (typeof keyboardListener !== 'undefined') {
 				jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
 			}
@@ -240,9 +260,9 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 				"rt": response.rt, //The response time
 				"key_press": response.key, //The key that the subject pressed
 				"correct": correctOrNot(), //If the subject response was correct
-				"choices": trial.choices,
-				"correct_choice": trial.correct_choice,
-				"trial_duration": trial.trial_duration,
+				"choices": trial.choices, //The set of valid keys
+				"correct_choice": trial.correct_choice, //The correct choice
+				"trial_duration": trial.trial_duration, //The trial duration 
 				"number_of_dots": trial.number_of_dots,
 				"number_of_sets": trial.number_of_sets,
 				"coherent_direction": trial.coherent_direction,
@@ -257,11 +277,9 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 				"RDK_type": trial.RDK_type,
 				"aperture_type": trial.aperture_type,
 				"reinsert_type": trial.reinsert_type,
-				"frame_rate": frameRate
+				"frame_rate": frameRate //The average frame rate for the trial
 			}
 			
-			console.log(trial_data);
-
 			//Remove the canvas as the child of the display_element element
 			display_element.empty();
 
@@ -288,16 +306,17 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 
 		}; //End of after_response
 		
+		//Function that determines if the response is correct
 		function correctOrNot(){
 						
 			//Check that the correct_choice has been defined
 			if(typeof trial.correct_choice !== 'undefined'){
-				//Check if the correct_choice variable holds an array or a single value
+				//Check if the correct_choice variable holds an array
 				if(trial.correct_choice.constructor === Array){ //If it is an array
 					trial.correct_choice = trial.correct_choice.map(function(x){return x.toUpperCase();}); //Convert all the values to upper case
-					console.log(trial.correct_choice);
-					return trial.correct_choice.includes(String.fromCharCode(response.key));
+					return trial.correct_choice.includes(String.fromCharCode(response.key)); //If the response is included in the correct_choice array, return true. Else, return false.
 				}
+				//Else compare the char with the response key
 				else{
 					//Return true if the user's response matches the correct answer. Return false otherwise.
 					return response.key == trial.correct_choice.toUpperCase().charCodeAt(0);
@@ -336,7 +355,7 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 
 		//Make the 2d array, which is an array of array of dots
 		function makeDotArray2d() {
-			//Declare a 2d array to hold the sets of dot arrays
+			//Declare an array to hold the sets of dot arrays
 			var tempArray = []
 			//Loop for each set of dot array
 			for (var i = 0; i < nSets; i++) {
@@ -450,12 +469,14 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 
 		//Update the dots with their new location
 		function updateDots() {
+			
 			//Cycle through to the next set of dots
 			if (currentSet == nSets - 1) {
 				currentSet = 0;
 			} else {
 				currentSet++;
 			}
+			
 			//Load in the current set of dot array for easy handling
 			dotArray = dotArray2d[currentSet]; //Global variable, so the draw function also uses this array
 
@@ -494,10 +515,6 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 						dot = randomDirectionUpdate(dot);
 					}
 				}
-				//Error checking. This else statement should not run if things are working properly.
-				else {
-					console.log("dot.updateType does not correspond to any predetermined strings.");
-				}
 
 				//Increment the life count
 				dot.lifeCount++;
@@ -526,7 +543,7 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 		function lifeEnded(dot) {
 			//If we want infinite dot life
 			if (dotLife < 0) {
-				dot.lifeCount = 0; //resetting to zero to save memory. Otherwise it will increment to huge numbers.
+				dot.lifeCount = 0; //resetting to zero to save memory. Otherwise it might increment to huge numbers.
 				return false;
 			}
 			//Else if the dot's life has reached its end
@@ -725,8 +742,8 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 			}
 			//For square and rectangle
 			else if (apertureType == 3 || apertureType == 4) {
-				dot.x = randomNumberBetween((width / 2) - horizontalAxis, (width / 2) + horizontalAxis); //between the left and right edges of the square / rectangle
-				dot.y = randomNumberBetween((height / 2) - verticalAxis, (height / 2) + verticalAxis); //between the top and bottom edges of the square / rectangle
+				dot.x = randomNumberBetween((width / 2) - horizontalAxis, (width / 2) + horizontalAxis); //Between the left and right edges of the square / rectangle
+				dot.y = randomNumberBetween((height / 2) - verticalAxis, (height / 2) + verticalAxis); //Between the top and bottom edges of the square / rectangle
 			}
 
 			return dot;
@@ -739,22 +756,33 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 		
 		//Function to make the dots move on the canvas
 		function animateDotMotion() {
-			//theCall saves a long integer that is the ID of this frame request. The ID is then used to terminate the request below.
-			var theCall = window.requestAnimationFrame(animate);
-			var previousTimestamp = performance.now(); //Timestamp used to calculate the time interval between frames
-			startKeyboardListener(); //Start to listen to subject's key responses
+			//frameRequestID saves a long integer that is the ID of this frame request. The ID is then used to terminate the request below.
+			var frameRequestID = window.requestAnimationFrame(animate);
+			
+			//Timestamp used to calculate the time interval between frames
+			var previousTimestamp = performance.now(); 
+			
+			//Start to listen to subject's key responses
+			startKeyboardListener(); 
+			
+			//If the trial duration is set, then set a timer to count down and call the end_trial function when the time is up
+			//(If the subject did not press a valid keyboard response within the trial duration, then this will end the trial)
+			if (trial.trial_duration > 0) {
+				timeoutID = window.setTimeout(end_trial,trial.trial_duration); //This timeoutID is then used to cancel the timeout should the subject press a valid key
+			}
+		
 			function animate() {
 				//If stopping condition has been reached, then stop the animation
 				if (stopDotMotion) {
-					window.cancelAnimationFrame(theCall); //Cancels the frame request
+					window.cancelAnimationFrame(frameRequestID); //Cancels the frame request
 				}
 				//Else continue with another frame request
 				else {
-					updateDots();
-					draw();
-					theCall = window.requestAnimationFrame(animate); //Calls for a frame request
+					updateDots(); //Update the dots to their new positions
+					draw(); //Draw the dots on the canvas
+					frameRequestID = window.requestAnimationFrame(animate); //Calls for another frame request
 					frameRate.push(performance.now()-previousTimestamp); //Push the interval into the frameRate array
-					previousTimestamp = performance.now();
+					previousTimestamp = performance.now(); //Reset the timestamp
 				}
 			}
 		}

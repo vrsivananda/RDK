@@ -60,13 +60,13 @@
 		
 		//Create an array of 2 different trials (different conditions)
 		var RDK_trial = [
-			{//First trial
-				correct_choice: "a", //The correct answer for this trial
-				coherent_direction: 180 //The coherent direction for this trial
+			{//Condition 1
+				correct_choice: "a", //The correct answer for Condition 1
+				coherent_direction: 180 //The coherent direction for Condition 1 (dots move left)
 			},
-			{//Second trial
-				correct_choice: "l", //The correct answer for this trial
-				coherent_direction: 0 //The coherent direction for this trial
+			{//Condition 2
+				correct_choice: "l", //The correct answer for Condition 2
+				coherent_direction: 0 //The coherent direction for Condition 2 (dots move right)
 			},
 		];
 		
@@ -76,12 +76,12 @@
 		//The test block where all the trials are nested. The properties here will trickle down to all trials in the timeline unless they have their own properties defined		
 		var test_block = {
 			type: "jspsych-RDK", 
-			timing_post_trial: 0, //The Inter Trial Interval. You can either have no ITI, or change the display element to be the same color as the stimuli background 
+			timing_post_trial: 0, //The Inter Trial Interval. You can either have no ITI, or change the display element to be the same color as the stimuli background to prevent flashing between trials
 			number_of_dots: 200, //Total number of dots in the aperture
 			RDK_type: 3, //The type of RDK used
 			choices: ["a", "l"], //Choices available to be keyed in by participant
 			trial_duration: 1000, //Duration of each trial in ms
-			timeline: all_trials 
+			timeline: all_trials //The timeline of all the trials
 		}
 		
 		
@@ -100,9 +100,9 @@
 		//Initiate the experiment
 		jsPsych.init({
 			timeline: main_timeline,
-			on_finish: function(){ //Execute this when the function finishes
+			on_finish: function(){ //Execute this when the experiment finishes
 				jsPsych.data.localSave('testSave.csv', 'csv'); //Save the data locally in a .csv file
-				jsPsych.data.displayData();
+				jsPsych.data.displayData(); //Display the data onto the browser screen
 			}
 		})
 		
