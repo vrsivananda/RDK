@@ -14,9 +14,9 @@ This table lists the parameters associated with this plugin. Parameters can be l
 |Parameter|Type|Default Value| Descripton|
 |---------|----|-------------|-----------|
 |`choices`|array|[]|The valid keys that the subject can press as a response. Must be an array of chars. If left unspecified, any key is a valid key.|
-|`correct_choice`|array or char|undefined|The keys that are considered the correct response for that trial. Can be a single char or an array of chars (not ASCII values). This is used to determine whether the subject chose the correct response and return that data. |
-|`trial_duration`|numeric|500|The amount of time that the stimulus is displayed on the screen in ms. If -1, the stimulus will be displayed until the subject keys in a valid response. (‘choices’ parameter must contain valid keys or else the stimuli will run indefinitely).|
-|`response_ends_trial`|boolean|true|If true, then the subject’s response will end the trial. If false, the stimuli will be presented for the full trial_duration (the response will be recorded as long as the subject responds within the trial duration).|
+|`correct_choice`|array or char|undefined|The keys that are considered the correct response for that particular trial. Can be a single char or an array of chars (not ASCII values).  This needs to be linked with the `coherent_direction` parameter (See Examples section below for an illustration.) This is used to determine whether the subject chose the correct response and return that data. |
+|`trial_duration`|numeric|500|The amount of time that the stimulus is displayed on the screen in ms. If -1, the stimulus will be displayed until the subject keys in a valid response. (`choices` parameter must contain valid keys or else the stimuli will run indefinitely).|
+|`response_ends_trial`|boolean|true|If true, then the subject’s response will end the trial. If false, the stimuli will be presented for the full `trial_duration` (the response will be recorded as long as the subject responds within the trial duration).|
 |`number_of_dots`|numeric|300|Number of dots per set. Equivalent to number of dots per frame.|
 |`number_of_sets`|numeric|1|Number of sets to cycle through. Each frame displays one set of dots. (E.g. If 2 sets of dots, frame 1 will display dots from set 1, frame 2 will display dots from set 2, frame 3 will display sets from set 1, etc.)|
 |`coherent_direction`|numeric|0|The direction of movement for coherent dots in degrees. 0 degrees is in the 3 o’clock direction, and increasing this number moves counterclockwise. (E.g. 12 o’clock is 90, 9 o’clock is 180, etc.) Range is 0 - 360.|
@@ -65,7 +65,19 @@ In addition to the default data collected by all plugins, this plugin collects a
 
 ## Example
 
-Displaying a trial with 2 choices and 1 correct choice
+#### Setting the correct_choice parameter by linking it to the coherent_direction parameter:
+```
+var trial_right = {
+	coherent_direction: 0,
+	correct_choice: “P”
+};
+
+var trial_left = {
+	coherent_direction: 180,
+	correct_choice: “Q”
+};
+```
+#### Displaying a trial with 2 choices and 1 correct choice
 
 ```
 var test_block = {

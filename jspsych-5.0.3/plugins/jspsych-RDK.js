@@ -382,7 +382,7 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 					latestYMove: 0, //Stores the latest y move direction for the dot (to be used in reinsertOnOppositeEdge function below)
 					lifeCount: Math.floor(randomNumberBetween(0, dotLife)), //Counter for the dot's life. Updates every time it is shown in a frame
 					updateType: "" //String to determine how this dot is updated
-				}
+				};
 				//randomly set the x and y coordinates
 				dot = resetLocation(dot);
 
