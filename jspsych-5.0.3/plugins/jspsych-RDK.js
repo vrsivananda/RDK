@@ -79,7 +79,7 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 		var apertureWidth = trial.aperture_width; // How many pixels wide the aperture is. For square aperture this will be the both height and width. For circle, this will be the diameter.
 		var apertureHeight = trial.aperture_height; //How many pixels high the aperture is. Only relevant for ellipse and rectangle apertures. For circle and square, this is ignored.
 		var dotColor = trial.dot_color; //Color of the dots
-		var backgroundColor = trial.backgroundColor; //Color of the background
+		var backgroundColor = trial.background_color; //Color of the background
 		
 
 		/* RDK type parameter
@@ -144,7 +144,7 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 		//Remove the margins and paddings of the display_element
 		body.style.margin = 0;
 		body.style.padding = 0;
-		body.style.backgroundColor = trial.background_color; //Match the background color of the canvas so that the removal of the canvas at the end of the trial is not noticed
+		body.style.backgroundColor = backgroundColor; //Match the background of the display element to the background color of the canvas so that the removal of the canvas at the end of the trial is not noticed
 
 		//Remove the margins and padding of the canvas
 		canvas.style.margin = 0;
@@ -274,7 +274,7 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 				"aperture_width": trial.aperture_width,
 				"aperture_height": trial.aperture_height,
 				"dot_color": trial.dot_color,
-				"backgroundColor": trial.backgroundColor,
+				"background_color": trial.background_color,
 				"RDK_type": trial.RDK_type,
 				"aperture_type": trial.aperture_type,
 				"reinsert_type": trial.reinsert_type,

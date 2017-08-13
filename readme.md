@@ -89,5 +89,5 @@ var test_block = {
 	correct_choice: "a",
 	coherent_direction: 180,
 	trial_duration: 1000
-}
+};
 ```
