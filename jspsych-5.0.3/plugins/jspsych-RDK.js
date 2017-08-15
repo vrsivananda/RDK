@@ -283,6 +283,9 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 			
 			//Remove the canvas as the child of the display_element element
 			display_element.empty();
+			
+			//Restore the margin to JsPsych defaults
+			body.style.margin = "50px auto 50px auto";
 
 			//End this trial and move on to the next trial
 			jsPsych.finishTrial(trial_data);
