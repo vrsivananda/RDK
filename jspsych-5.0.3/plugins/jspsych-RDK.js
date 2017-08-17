@@ -38,7 +38,7 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 		//--------------------------------------
 		
 		//If any of the parameters are functions, evaluate them now
-    	trial = jsPsych.pluginAPI.evaluateFunctionParameters(trial);
+		trial = jsPsych.pluginAPI.evaluateFunctionParameters(trial);
 		
 		//Note on '||' logical operator: If the first option is 'undefined', it evalutes to 'false' and the second option is returned as the assignment
 		trial.choices = trial.choices || [];
