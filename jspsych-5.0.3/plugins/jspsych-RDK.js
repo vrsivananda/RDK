@@ -203,6 +203,9 @@ jsPsych.plugins["RDK"] = (function() {
 		
 		//Variable to control the frame rate, to ensure that the first frame is skipped because it follows a different timing
 		var firstFrame = true; //Used to skip the first frame in animate function below (in animateDotMotion function)
+		
+		//Variable to start the timer when the time comes
+		var timerHasStarted = false;
 
 		//Initialize object to store the response data. Default values of -1 are used if the trial times out and the subject has not pressed a valid key
 		var response = {
@@ -797,13 +800,7 @@ jsPsych.plugins["RDK"] = (function() {
 						
 						//Start to listen to subject's key responses
 						startKeyboardListener(); 
-						
-						//If the trial duration is set, then set a timer to count down and call the end_trial function when the time is up
-						//(If the subject did not press a valid keyboard response within the trial duration, then this will end the trial)
-						if (trial.trial_duration > 0) {
-							timeoutID = window.setTimeout(end_trial,trial.trial_duration); //This timeoutID is then used to cancel the timeout should the subject press a valid key
-						}
-						
+												
 						//Set the timestamp to calculate the time per frame
 						previousTimestamp = performance.now();
 						
@@ -812,6 +809,14 @@ jsPsych.plugins["RDK"] = (function() {
 					}
 					//If it is not the first frame, then update and draw on canvas
 					else{
+						//If the timer has not been started and it is set, then start the timer
+						if ( (!timerHasStarted) && (trial.trial_duration > 0) ){
+							//If the trial duration is set, then set a timer to count down and call the end_trial function when the time is up
+							//(If the subject did not press a valid keyboard response within the trial duration, then this will end the trial)
+							timeoutID = window.setTimeout(end_trial,trial.trial_duration); //This timeoutID is then used to cancel the timeout should the subject press a valid key
+							//The timer has started, so we set the variable to true so it does not start more timers
+							timerHasStarted = true;
+						}
 						updateDots(); //Update the dots to their new positions
 						draw(); //Draw the dots on the canvas
 						var currentTimeStamp = performance.now(); //Variable to hold current timestamp
