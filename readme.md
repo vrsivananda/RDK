@@ -31,8 +31,7 @@ This table lists the parameters associated with this plugin. Parameters can be l
 |`RDK_type`|numeric|3|The Signal Selection Rule (Same/Different) and Noise Type (Random Position/Walk/Direction):<br><br>1 - Same && Random Position<br>2 - Same && Random Walk<br>3 - Same && Random Direction<br>4 - Different && Random Position<br>5 - Different && Random Walk<br>6 - Different && Random Direction<br><br>(See 'RDK parameter' below for more detailed information)<br>|
 |`aperture_type`|numeric|2|The shape of the aperture.<br><br>1 - Circle<br>2 - Ellipse<br>3 - Square<br>4 - Rectangle<br>|
 |`reinsert_type`|numeric|2|The type of reinsertion of a dot that has gone out of bounds<br><br>1 - Randomly appear anywhere in the aperture<br>2 - Appear on the opposite edge of the aperture. For squares and rectangles, a random point on the opposite edge is chosen as the reinsertion point. For circles and ellipses, the exit point is reflected about center to become the reinsertion point.<br>|
-|`number_of_frames`|numeric|The number of frames that was shown in this trial.|
-|`frame_rate_array`|JSON string|The array that holds the number of miliseconds for each frame in this trial.|
+
 
 ### RDK type parameter
 ** See Fig. 1 in Scase, Braddick, and Raymond (1996) for a visual depiction of these different signal selection rules and noise types.
@@ -42,9 +41,9 @@ This table lists the parameters associated with this plugin. Parameters can be l
 -**Different**: Each dot can be either a coherent dot (signal) or incoherent dot (noise) and will be designated randomly (weighted based on the coherence level) at each frame. Only the dots that are designated to be coherent dots will move in the direction of coherent motion, but only in that frame. In the next frame, each dot will be designated randomly again on whether it is a coherent or incoherent dot.
 
 #### Noise Type:
--**Random position**: The incoherent dots appear in a random location in the aperture in each frame.
--**Random walk**: The incoherent dots will move in a random direction (designated randomly in each frame) in each frame.
--**Random direction**: Each incoherent dot has its own alternative direction of motion (designated randomly at the beginning of the trial), and moves in that direction in each frame.
+-**Random position**: The incoherent dots appear in a random location in the aperture in each frame. <br>
+-**Random walk**: The incoherent dots will move in a random direction (designated randomly in each frame) in each frame. <br>
+-**Random direction**: Each incoherent dot has its own alternative direction of motion (designated randomly at the beginning of the trial), and moves in that direction in each frame.<br>
 
 
 
@@ -60,6 +59,8 @@ In addition to the default data collected by all plugins, this plugin collects a
 |`key_press`|numeric|The key that the subject pressed. The value corresponds to the Javascript Char Code (Key Code).|
 |`correct`|boolean|Whether or not the subject's key press corresponded to those provided in correct_choice.|
 |`frame_rate`|numeric|The average frame rate for the trial. 0 denotes that the subject responded before the appearance of the second frame.|
+|`number_of_frames`|numeric|The number of frames that was shown in this trial.|
+|`frame_rate_array`|JSON string|The array that holds the number of miliseconds for each frame in this trial.|
 
 
 
