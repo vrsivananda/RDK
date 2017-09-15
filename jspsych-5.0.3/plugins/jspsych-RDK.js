@@ -26,7 +26,7 @@
 */
 		
 		
-jsPsych.plugins["jspsych-RDK"] = (function() {
+jsPsych.plugins["RDK"] = (function() {
 
 	var plugin = {};
 
@@ -294,7 +294,7 @@ jsPsych.plugins["jspsych-RDK"] = (function() {
 				"aperture_type": trial.aperture_type,
 				"reinsert_type": trial.reinsert_type,
 				"frame_rate": frameRate, //The average frame rate for the trial
-				"frame_rate_array": JSON.stringify(frameRateArray), //The array of ms per frame in this trial
+				"frame_rate_array": JSON.stringify(frameRateArray), //The array of ms per frame in this trial, in the form of a JSON string
 				"number_of_frames": numberOfFrames //The number of frames in this trial
 			}
 			
