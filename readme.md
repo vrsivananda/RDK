@@ -31,6 +31,8 @@ This table lists the parameters associated with this plugin. Parameters can be l
 |`RDK_type`|numeric|3|The Signal Selection Rule (Same/Different) and Noise Type (Random Position/Walk/Direction):<br><br>1 - Same && Random Position<br>2 - Same && Random Walk<br>3 - Same && Random Direction<br>4 - Different && Random Position<br>5 - Different && Random Walk<br>6 - Different && Random Direction<br><br>(See 'RDK parameter' below for more detailed information)<br>|
 |`aperture_type`|numeric|2|The shape of the aperture.<br><br>1 - Circle<br>2 - Ellipse<br>3 - Square<br>4 - Rectangle<br>|
 |`reinsert_type`|numeric|2|The type of reinsertion of a dot that has gone out of bounds<br><br>1 - Randomly appear anywhere in the aperture<br>2 - Appear on the opposite edge of the aperture. For squares and rectangles, a random point on the opposite edge is chosen as the reinsertion point. For circles and ellipses, the exit point is reflected about center to become the reinsertion point.<br>|
+|`aperture_center_x`|numeric|window.innerWidth/2|The x-coordinate of the center of the aperture, in pixels.<br>|
+|`aperture_center_y`|numeric|window.innerHeight/2|The y-coordinate of the center of the aperture, in pixels.<br>|
 
 
 ### RDK type parameter

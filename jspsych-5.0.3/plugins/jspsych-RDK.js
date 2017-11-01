@@ -46,8 +46,7 @@ jsPsych.plugins["RDK"] = (function() {
 		trial.trial_duration = trial.trial_duration || 500;
 		trial.number_of_dots = trial.number_of_dots || 300;
 		trial.number_of_sets = trial.number_of_sets || 1;
-		trial.coherent_direction = trial.coherent_direction || 0; 
-		trial.coherence = trial.coherence || 0.5;
+		trial.coherent_direction = trial.coherent_direction || 0;
 		trial.dot_radius = trial.dot_radius || 2;
 		trial.dot_life = trial.dot_life || -1;
 		trial.move_distance = trial.move_distance || 1;
@@ -58,7 +57,13 @@ jsPsych.plugins["RDK"] = (function() {
 		trial.RDK_type = trial.RDK_type || 3;
 		trial.aperture_type = trial.aperture_type || 2;
 		trial.reinsert_type = trial.reinsert_type || 2;
+		trial.aperture_center_x = trial.aperture_center_x || window.innerWidth/2;
+		trial.aperture_center_y = trial.aperture_center_y || window.innerHeight/2;
 		
+		//Coherence can be zero, but logical operators evaluate it to false. So we do it manually
+		if(typeof trial.coherence === 'undefined'){
+			trial.coherence = 0.5;
+		}
 
 		//Logical operators won't work for boolean parameters like they do for non-boolean parameters above, so we do it manually
 		if (typeof trial.response_ends_trial === 'undefined') {
@@ -83,6 +88,8 @@ jsPsych.plugins["RDK"] = (function() {
 		var apertureHeight = trial.aperture_height; //How many pixels high the aperture is. Only relevant for ellipse and rectangle apertures. For circle and square, this is ignored.
 		var dotColor = trial.dot_color; //Color of the dots
 		var backgroundColor = trial.background_color; //Color of the background
+		var apertureCenterX = trial.aperture_center_x; // The x-coordinate of center of the aperture on the screen, in pixels
+		var apertureCenterY = trial.aperture_center_y; // The y-coordinate of center of the aperture on the screen, in pixels
 		
 
 		/* RDK type parameter
@@ -368,7 +375,7 @@ jsPsych.plugins["RDK"] = (function() {
 		function initializeApertureParameters() {
 			//For circle and square
 			if (apertureType == 1 || apertureType == 3) {
-				horizontalAxis = verticalAxis = apertureWidth / 2;
+				horizontalAxis = verticalAxis = apertureWidth/2;
 			}
 			//For ellipse and rectangle
 			else if (apertureType == 2 || apertureType == 4) {
@@ -593,7 +600,7 @@ jsPsych.plugins["RDK"] = (function() {
 			}
 			//For square and rectangle
 			if (apertureType == 3 || apertureType == 4) {
-				if (dot.x < (width / 2) - horizontalAxis || dot.x > (width / 2) + horizontalAxis || dot.y < (height / 2) - verticalAxis || dot.y > (height / 2) + verticalAxis) {
+				if (dot.x < (apertureCenterX) - horizontalAxis || dot.x > (apertureCenterX) + horizontalAxis || dot.y < (apertureCenterY) - verticalAxis || dot.y > (apertureCenterY) + verticalAxis) {
 					return true;
 				} else {
 					return false;
@@ -659,16 +666,16 @@ jsPsych.plugins["RDK"] = (function() {
 				dot.y -= dot.latestYMove;
 
 				//Move the dot to the position relative to the origin to be reflected about the origin
-				dot.x -= width / 2;
-				dot.y -= height / 2;
+				dot.x -= apertureCenterX;
+				dot.y -= apertureCenterY;
 
 				//Reflect the dot about the origin
 				dot.x = -dot.x;
 				dot.y = -dot.y;
 
 				//Move the dot back to the center of the screen
-				dot.x += width / 2;
-				dot.y += height / 2;
+				dot.x += apertureCenterX;
+				dot.y += apertureCenterY;
 
 			} //End of if apertureType == 1 | == 2
 
@@ -704,19 +711,19 @@ jsPsych.plugins["RDK"] = (function() {
 				//Generate a bounded random number to determine if the dot should appear on the vertical edge or the horizontal edge
 				if (weightOnVerticalEdge > (weightOnHorizontalEdge + weightOnVerticalEdge) * Math.random()) { //If yes, appear on the left or right edge (vertical edge)
 					if (dot.latestXMove < 0) { //If dots move left, appear on right edge
-						dot.x = width / 2 + horizontalAxis;
-						dot.y = randomNumberBetween((height / 2) - verticalAxis, (height / 2) + verticalAxis);
+						dot.x = apertureCenterX + horizontalAxis;
+						dot.y = randomNumberBetween((apertureCenterY) - verticalAxis, (apertureCenterY) + verticalAxis);
 					} else { //Else dots move right, so they should appear on the left edge
-						dot.x = width / 2 - horizontalAxis;
-						dot.y = randomNumberBetween((height / 2) - verticalAxis, (height / 2) + verticalAxis);
+						dot.x = apertureCenterX - horizontalAxis;
+						dot.y = randomNumberBetween((apertureCenterY) - verticalAxis, (apertureCenterY) + verticalAxis);
 					}
 				} else { //Else appear on the top or bottom edge (horizontal edge)
 					if (dot.latestYMove < 0) { //If dots move upwards, then appear on bottom edge
-						dot.y = height / 2 + verticalAxis;
-						dot.x = randomNumberBetween((width / 2) - horizontalAxis, (width / 2) + horizontalAxis)
+						dot.y = apertureCenterY + verticalAxis;
+						dot.x = randomNumberBetween((apertureCenterX) - horizontalAxis, (apertureCenterX) + horizontalAxis)
 					} else { //If dots move downwards, then appear on top edge
-						dot.y = height / 2 - verticalAxis;
-						dot.x = randomNumberBetween((width / 2) - horizontalAxis, (width / 2) + horizontalAxis)
+						dot.y = apertureCenterY - verticalAxis;
+						dot.x = randomNumberBetween((apertureCenterX) - horizontalAxis, (apertureCenterX) + horizontalAxis)
 					}
 				}
 			} //End of apertureType == 3
@@ -725,26 +732,26 @@ jsPsych.plugins["RDK"] = (function() {
 
 		//Calculate the POSITIVE y value of a point on the edge of the ellipse given an x-value
 		function yValuePositive(x) {
-			var x = x - (width / 2); //Bring it back to the (0,0) center to calculate accurately (ignore the y-coordinate because it is not necessary for calculation)
-			return verticalAxis * Math.sqrt(1 - (Math.pow(x, 2) / Math.pow(horizontalAxis, 2))) + height / 2; //Calculated the positive y value and added height/2 to recenter it on the screen 
+			var x = x - (apertureCenterX); //Bring it back to the (0,0) center to calculate accurately (ignore the y-coordinate because it is not necessary for calculation)
+			return verticalAxis * Math.sqrt(1 - (Math.pow(x, 2) / Math.pow(horizontalAxis, 2))) + apertureCenterY; //Calculated the positive y value and added apertureCenterY to recenter it on the screen 
 		}
 
 		//Calculate the NEGATIVE y value of a point on the edge of the ellipse given an x-value
 		function yValueNegative(x) {
-			var x = x - (width / 2); //Bring it back to the (0,0) center to calculate accurately (ignore the y-coordinate because it is not necessary for calculation)
-			return -verticalAxis * Math.sqrt(1 - (Math.pow(x, 2) / Math.pow(horizontalAxis, 2))) + height / 2; //Calculated the negative y value and added height/2 to recenter it on the screen
+			var x = x - (apertureCenterX); //Bring it back to the (0,0) center to calculate accurately (ignore the y-coordinate because it is not necessary for calculation)
+			return -verticalAxis * Math.sqrt(1 - (Math.pow(x, 2) / Math.pow(horizontalAxis, 2))) + apertureCenterY; //Calculated the negative y value and added apertureCenterY to recenter it on the screen
 		}
 
 		//Calculate the POSITIVE x value of a point on the edge of the ellipse given a y-value
 		function xValuePositive(y) {
-			var y = y - (height / 2); //Bring it back to the (0,0) center to calculate accurately (ignore the x-coordinate because it is not necessary for calculation)
-			return horizontalAxis * Math.sqrt(1 - (Math.pow(y, 2) / Math.pow(verticalAxis, 2))) + width / 2; //Calculated the positive x value and added width/2 to recenter it on the screen
+			var y = y - (apertureCenterY); //Bring it back to the (0,0) center to calculate accurately (ignore the x-coordinate because it is not necessary for calculation)
+			return horizontalAxis * Math.sqrt(1 - (Math.pow(y, 2) / Math.pow(verticalAxis, 2))) + apertureCenterX; //Calculated the positive x value and added apertureCenterX to recenter it on the screen
 		}
 
 		//Calculate the NEGATIVE x value of a point on the edge of the ellipse given a y-value
 		function xValueNegative(y) {
-			var y = y - (height / 2); //Bring it back to the (0,0) center to calculate accurately (ignore the x-coordinate because it is not necessary for calculation)
-			return -horizontalAxis * Math.sqrt(1 - (Math.pow(y, 2) / Math.pow(verticalAxis, 2))) + width / 2; //Calculated the negative x value and added width/2 to recenter it on the screen
+			var y = y - (apertureCenterY); //Bring it back to the (0,0) center to calculate accurately (ignore the x-coordinate because it is not necessary for calculation)
+			return -horizontalAxis * Math.sqrt(1 - (Math.pow(y, 2) / Math.pow(verticalAxis, 2))) + apertureCenterX; //Calculated the negative x value and added apertureCenterX to recenter it on the screen
 		}
 
 		//Calculate a random x and y coordinate in the ellipse
@@ -758,16 +765,16 @@ jsPsych.plugins["RDK"] = (function() {
 				x = Math.sqrt(rho) * Math.cos(phi);
 				y = Math.sqrt(rho) * Math.sin(phi);
 
-				x = x * horizontalAxis + width / 2;
-				y = y * verticalAxis + height / 2;
+				x = x * horizontalAxis + apertureCenterX;
+				y = y * verticalAxis + apertureCenterY;
 
 				dot.x = x;
 				dot.y = y;
 			}
 			//For square and rectangle
 			else if (apertureType == 3 || apertureType == 4) {
-				dot.x = randomNumberBetween((width / 2) - horizontalAxis, (width / 2) + horizontalAxis); //Between the left and right edges of the square / rectangle
-				dot.y = randomNumberBetween((height / 2) - verticalAxis, (height / 2) + verticalAxis); //Between the top and bottom edges of the square / rectangle
+				dot.x = randomNumberBetween((apertureCenterX) - horizontalAxis, (apertureCenterX) + horizontalAxis); //Between the left and right edges of the square / rectangle
+				dot.y = randomNumberBetween((apertureCenterY) - verticalAxis, (apertureCenterY) + verticalAxis); //Between the top and bottom edges of the square / rectangle
 			}
 
 			return dot;
