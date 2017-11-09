@@ -33,6 +33,11 @@ This table lists the parameters associated with this plugin. Parameters can be l
 |`reinsert_type`|numeric|2|The type of reinsertion of a dot that has gone out of bounds<br><br>1 - Randomly appear anywhere in the aperture<br>2 - Appear on the opposite edge of the aperture. For squares and rectangles, a random point on the opposite edge is chosen as the reinsertion point. For circles and ellipses, the exit point is reflected about center to become the reinsertion point.<br>|
 |`aperture_center_x`|numeric|window.innerWidth/2|The x-coordinate of the center of the aperture, in pixels.<br>|
 |`aperture_center_y`|numeric|window.innerHeight/2|The y-coordinate of the center of the aperture, in pixels.<br>|
+|`fixation_cross`|boolean|true|Whether or not a fixation cross is presented in the middle of the screen.<br>|
+|`fixation_cross_width`|numeric|20|The width of the fixation cross in pixels.<br>|
+|`fixation_cross_height`|numeric|20|The height of the fixation cross in pixels.<br>|
+|`fixation_cross_color`|string"black"|The color of the fixation cross.<br>|
+|`fixation_cross_thickness`|numeric|1|The thickness of the fixation cross in pixels.<br>|
 
 
 ### RDK type parameter
