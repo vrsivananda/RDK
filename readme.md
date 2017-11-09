@@ -36,7 +36,7 @@ This table lists the parameters associated with this plugin. Parameters can be l
 |`fixation_cross`|boolean|true|Whether or not a fixation cross is presented in the middle of the screen.<br>|
 |`fixation_cross_width`|numeric|20|The width of the fixation cross in pixels.<br>|
 |`fixation_cross_height`|numeric|20|The height of the fixation cross in pixels.<br>|
-|`fixation_cross_color`|string"black"|The color of the fixation cross.<br>|
+|`fixation_cross_color`|string|"black"|The color of the fixation cross.<br>|
 |`fixation_cross_thickness`|numeric|1|The thickness of the fixation cross in pixels.<br>|
 
 
