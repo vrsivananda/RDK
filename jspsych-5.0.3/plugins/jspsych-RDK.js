@@ -822,7 +822,10 @@ jsPsych.plugins["RDK"] = (function() {
 			//frameRequestID saves a long integer that is the ID of this frame request. The ID is then used to terminate the request below.
 			var frameRequestID = window.requestAnimationFrame(animate);
 			
-			//Timestamp used to calculate the time interval between frames
+			//Start to listen to subject's key responses
+			startKeyboardListener(); 
+									
+			//Delare a timestamp
 			var previousTimestamp;
 			
 			function animate() {
@@ -834,35 +837,28 @@ jsPsych.plugins["RDK"] = (function() {
 				else {
 					frameRequestID = window.requestAnimationFrame(animate); //Calls for another frame request
 					
-					//If it is the first frame, then set the timing variables up
-					if(firstFrame){
-						
-						//Start to listen to subject's key responses
-						startKeyboardListener(); 
-												
-						//Set the timestamp to calculate the time per frame
-						previousTimestamp = performance.now();
-						
-						//Set the firstFrame to false so that the next frame will be the normal dot motion animation
-						firstFrame = false;
-					}
-					//If it is not the first frame, then update and draw on canvas
-					else{
-						//If the timer has not been started and it is set, then start the timer
-						if ( (!timerHasStarted) && (trial.trial_duration > 0) ){
-							//If the trial duration is set, then set a timer to count down and call the end_trial function when the time is up
-							//(If the subject did not press a valid keyboard response within the trial duration, then this will end the trial)
-							timeoutID = window.setTimeout(end_trial,trial.trial_duration); //This timeoutID is then used to cancel the timeout should the subject press a valid key
-							//The timer has started, so we set the variable to true so it does not start more timers
-							timerHasStarted = true;
-						}
-						updateDots(); //Update the dots to their new positions
-						draw(); //Draw the dots on the canvas
-						var currentTimeStamp = performance.now(); //Variable to hold current timestamp
-						frameRate.push(currentTimeStamp -previousTimestamp); //Push the interval into the frameRate array
-						previousTimestamp = currentTimeStamp; //Reset the timestamp
+					//If the timer has not been started and it is set, then start the timer
+					if ( (!timerHasStarted) && (trial.trial_duration > 0) ){
+						//If the trial duration is set, then set a timer to count down and call the end_trial function when the time is up
+						//(If the subject did not press a valid keyboard response within the trial duration, then this will end the trial)
+						timeoutID = window.setTimeout(end_trial,trial.trial_duration); //This timeoutID is then used to cancel the timeout should the subject press a valid key
+						//The timer has started, so we set the variable to true so it does not start more timers
+						timerHasStarted = true;
 					}
 					
+					updateDots(); //Update the dots to their new positions
+					draw(); //Draw the dots on the canvas
+					
+					//If this is before the first frame, then start the timestamp
+					if(previousTimestamp === undefined){
+						previousTimestamp = performance.now();
+					}
+					//Else calculate the time and push it into the array
+					else{
+						var currentTimeStamp = performance.now(); //Variable to hold current timestamp
+						frameRate.push(currentTimeStamp - previousTimestamp); //Push the interval into the frameRate array
+						previousTimestamp = currentTimeStamp; //Reset the timestamp
+					}
 				}
 			}
 		}
