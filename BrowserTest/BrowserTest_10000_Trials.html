@@ -1,0 +1,110 @@
+<! doctype html>
+<html>
+	<head>
+	
+		<!--
+		
+		RDK plugin for JsPsych
+		----------------------
+		
+		This code was created in the Consciousness and Metacognition Lab at UCLA, 
+		under the supervision of Brian Odegaard and Hakwan Lau
+    
+		----------------------
+		
+		Copyright (C) 2017  Sivananda Rajananda
+		
+		This program is free software: you can redistribute it and/or modify
+		it under the terms of the GNU General Public License as published by
+		the Free Software Foundation, either version 3 of the License, or
+		(at your option) any later version.
+		
+		This program is distributed in the hope that it will be useful,
+		but WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+		GNU General Public License for more details.
+		
+		You should have received a copy of the GNU General Public License
+		along with this program.  If not, see <http://www.gnu.org/licenses/>.
+		
+		-->
+		
+		<title> RDK Experiment</title>
+		 <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		 <script src = "jspsych-5.0.3/jspsych.js"></script>
+		 <script src = "jspsych-5.0.3/plugins/jspsych-RDK.js"></script> <!--Include the script for the RDK plugin-->
+		 <script src = "jspsych-5.0.3/plugins/jspsych-text.js"></script>
+		 <link href = "jspsych-5.0.3/css/jspsych.css" rel = "stylesheet" type = "text/css"></link>
+	</head>
+	<body>
+	</body>
+	<script>
+		
+		
+		//---------Create instructions---------
+		
+		var instructions_block = {
+			type: "text",
+			text: "<p> This is a sample experiment for the RDK plugin.</p>" + 
+			"<p> On each trial, half the dots will be moving in a coherent direction (left or right) and the other half will move randomly.</p>" + 
+			"<p> Before the end of the trial, determine if the dots are moving left or right.</p>" + 
+			"<p> If the dots are moving left, press the 'A' key. If the dots are moving right, press the 'L' key.</p>" +
+			"<p> There are 4 trials and each trial will last 1000ms.</p>" +
+			"<p> After all 4 trials have ended, the data will be displayed on the screen and a copy will be saved locally in a .csv file.</p>"  +
+			"<p> Press any key to continue.</p>"			
+		}
+		
+		
+		
+		//---------Create trials---------
+		
+		//Create an array of 2 different trials (different conditions)
+		var RDK_trial = [
+			{//Condition 1
+				correct_choice: "a", //The correct answer for Condition 1
+				coherent_direction: 180 //The coherent direction for Condition 1 (dots move left)
+			},
+			{//Condition 2
+				correct_choice: "l", //The correct answer for Condition 2
+				coherent_direction: 0 //The coherent direction for Condition 2 (dots move right)
+			},
+		];
+		
+		//Multiply based on how many trials you need and randomize the trial order
+		var all_trials = jsPsych.randomization.repeat(RDK_trial,5000); //Double the number of trials and shuffle them
+		
+		//The test block where all the trials are nested. The properties here will trickle down to all trials in the timeline unless they have their own properties defined		
+		var test_block = {
+			type: "RDK", 
+			timing_post_trial: 0, //The Inter Trial Interval. You can either have no ITI, or change the display element to be the same color as the stimuli background to prevent flashing between trials
+			number_of_dots: 200, //Total number of dots in the aperture
+			RDK_type: 3, //The type of RDK used
+			choices: ["a", "l"], //Choices available to be keyed in by participant
+			trial_duration: 200, //Duration of each trial in ms
+			timeline: all_trials //The timeline of all the trials
+		}
+		
+		
+		
+		//---------Prepare the main timeline---------
+		
+		//The main timeline to be fed into jsPsych.init
+		var main_timeline = [];
+		//main_timeline.push(instructions_block);
+		main_timeline.push(test_block);
+		
+		
+		
+		//---------Run the experiment---------
+		
+		//Initiate the experiment
+		jsPsych.init({
+			timeline: main_timeline,
+			on_finish: function(){ //Execute this when the experiment finishes
+				jsPsych.data.localSave('testSave.csv', 'csv'); //Save the data locally in a .csv file
+				//jsPsych.data.displayData(); //Display the data onto the browser screen
+			}
+		})
+		
+	</script>
+</html>
