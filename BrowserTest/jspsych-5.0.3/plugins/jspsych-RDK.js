@@ -41,38 +41,31 @@ jsPsych.plugins["RDK"] = (function() {
 		trial = jsPsych.pluginAPI.evaluateFunctionParameters(trial);
 		
 		//Note on '||' logical operator: If the first option is 'undefined', it evalutes to 'false' and the second option is returned as the assignment
-		trial.choices = trial.choices || [];
-		trial.correct_choice = trial.correct_choice; 
-		trial.trial_duration = trial.trial_duration || 500;
-		trial.number_of_dots = trial.number_of_dots || 300;
-		trial.number_of_sets = trial.number_of_sets || 1;
-		trial.coherent_direction = trial.coherent_direction || 0;
-		trial.dot_radius = trial.dot_radius || 2;
-		trial.dot_life = trial.dot_life || -1;
-		trial.move_distance = trial.move_distance || 1;
-		trial.aperture_width = trial.aperture_width || 600;
-		trial.aperture_height = trial.aperture_height || 400;
-		trial.dot_color = trial.dot_color || "white"; 
-		trial.background_color = trial.background_color || "gray";
-		trial.RDK_type = trial.RDK_type || 3;
-		trial.aperture_type = trial.aperture_type || 2;
-		trial.reinsert_type = trial.reinsert_type || 2;
-		trial.aperture_center_x = trial.aperture_center_x || window.innerWidth/2;
-		trial.aperture_center_y = trial.aperture_center_y || window.innerHeight/2;
-		trial.fixation_cross = trial.fixation_cross || false; 
-		trial.fixation_cross_width = trial.fixation_cross_width || 20; 
-		trial.fixation_cross_height = trial.fixation_cross_height || 20; 
-		trial.fixation_cross_color = trial.fixation_cross_color || "black";
-		trial.fixation_cross_thickness = trial.fixation_cross_thickness || 1; 
-		
-		//Coherence can be zero, but logical operators evaluate it to false. So we do it manually
-		if(typeof trial.coherence === 'undefined'){
-			trial.coherence = 0.5;
-		}
-
-		//Logical operators won't work for boolean parameters like they do for non-boolean parameters above, so we do it manually
-		if (typeof trial.response_ends_trial === 'undefined') {
-			trial.response_ends_trial = true;
+		trial.choices = assignParameterValue(trial.choices, []);
+		trial.correct_choice = assignParameterValue(trial.correct_choice, undefined); 
+		trial.trial_duration = assignParameterValue(trial.trial_duration, 500);
+		trial.number_of_dots = assignParameterValue(trial.number_of_dots, 300);
+		trial.number_of_sets = assignParameterValue(trial.number_of_sets, 1);
+		trial.coherent_direction = assignParameterValue(trial.coherent_direction, 0);
+		trial.dot_radius = assignParameterValue(trial.dot_radius, 2);
+		trial.dot_life = assignParameterValue(trial.dot_life, -1);
+		trial.move_distance = assignParameterValue(trial.move_distance, 1);
+		trial.aperture_width = assignParameterValue(trial.aperture_width, 600);
+		trial.aperture_height = assignParameterValue(trial.aperture_height, 400);
+		trial.dot_color = assignParameterValue(trial.dot_color, "white"); 
+		trial.background_color = assignParameterValue(trial.background_color, "gray");
+		trial.RDK_type = assignParameterValue(trial.RDK_type, 3);
+		trial.aperture_type = assignParameterValue(trial.aperture_type, 2);
+		trial.reinsert_type = assignParameterValue(trial.reinsert_type, 2);
+		trial.aperture_center_x = assignParameterValue(trial.aperture_center_x, window.innerWidth/2);
+		trial.aperture_center_y = assignParameterValue(trial.aperture_center_y, window.innerHeight/2);
+		trial.fixation_cross = assignParameterValue(trial.fixation_cross false,; 
+		trial.fixation_cross_width = assignParameterValue(trial.fixation_cross_width, 20); 
+		trial.fixation_cross_height = assignParameterValue(trial.fixation_cross_height, 20); 
+		trial.fixation_cross_color = assignParameterValue(trial.fixation_cross_color, "black");
+		trial.fixation_cross_thickness = assignParameterValue(trial.fixation_cross_thickness, 1); 
+		trial.coherence = assignParameterValue(trial.coherence, 0.5);
+		trial.response_ends_trial = assignParameterValue(trial.response_ends_trial, true);
 		}
 		
 		//For square and circle, set the aperture height == aperture width
@@ -864,6 +857,15 @@ jsPsych.plugins["RDK"] = (function() {
 		}
 
 		//----RDK Functions End----
+	
+		//----------------General Functions Begin------------------
+		
+		//Function to assign the default values for the staircase parameters
+		function assignParameterValue(argument, defaultValue){
+			return typeof argument !== 'undefined' ? argument : defaultValue;
+		}
+		
+		//----------------General Functions End------------------
 
 
 		//-------------------------------------
