@@ -3,7 +3,8 @@
 An updated version of the RDK is now available at 
 <br> 
 <br> (1) Github: https://github.com/vrsivananda/jsPsych/blob/add-RDK/plugins/jspsych-RDK.js
-<br> - This is integrated into the latest jsPsych 6.0.3 library
+<br> - The new RDK is integrated into the latest jsPsych 6.0.3 library, which can be found [here](https://github.com/vrsivananda/jsPsych).
+<br> - The updated documentation is [here](https://github.com/vrsivananda/jsPsych/blob/add-RDK/docs/plugins/jspsych-RDK.md).
 <br> 
 <br> (2) Codepen: https://codepen.io/vrsivananda/pen/MVXXOZ
 <br> - This is the updated raw code
