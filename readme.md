@@ -1,3 +1,21 @@
+# Important Note 
+
+An updated version of the RDK is now available at 
+<br> 
+<br> (1) Github: https://github.com/vrsivananda/jsPsych/blob/add-RDK/plugins/jspsych-RDK.js
+<br> - This is integrated into the latest jsPsych 6.0.3 library
+<br> 
+<br> (2) Codepen: https://codepen.io/vrsivananda/pen/MVXXOZ
+<br> - This is the updated raw code
+
+The updated version features:
+- Customizable border around the aperture
+- Multiple independently customizable apertures at different locations on screen
+- Parameter for dots moving in the opposite direction of the coherent dots (oppositeCoherence)
+- Decreased lag time between frames
+
+
+
 # jspsych-RDK plugin
 
 This plugin displays a Random Dot Kinematogram (RDK) and allows the subject to report the primary direction of motion by pressing a key on the keyboard. The stimulus is displayed until a keyboard response is given. The trial can be ended automatically if the subject has failed to respond within a fixed length of time.
